@@ -278,10 +278,10 @@ function countall {
   #i
   countthem "`grep -aE "$all_events" "$LOGDIR"/${LGPFX}subscribe_q_f71_*.log | grep -v DEBUG | wc -l`"
   totsubq="${tot}"
-  countthem "`grep -aE "$all_events" "$LOGDIR"/${LGPFX}subscribe_q_f71_*.log | grep -v DEBUG | sed 's/.*ok://g' | sort | uniq | wc -l`"
+  countthem "`grep -aE "$all_events" "$LOGDIR"/${LGPFX}subscribe_q_f71_*.log | grep -v DEBUG | sed 's/.*ok://g' | awk '{ print $1 }' | sort | uniq | wc -l`"
   # need to use uniq because 1) we use uniq values from the poll and 2) subscribe might process some messages twice, if the broker
   # goes down before the subscriber can ack them -- the messages will get re-delivered by the broker even if they've already been
-  # successfully "worked" by the subscriber.
+  # successfully "worked" by the subscriber. Since 3.02.00, need awk to remove the size: ... rate: ... suffix.
   totsubq_uniq="${tot}"
 
   if [ "${sarra_py_version:0:1}" == "3" ]; then
