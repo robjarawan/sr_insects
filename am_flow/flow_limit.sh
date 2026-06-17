@@ -43,7 +43,7 @@ while [ $queued_msgcnt -gt 0 ]; do
 done
 
 sleepytime=60
-printf ¨\nwaiting $sleepytime for things to settle out\n¨
+printf "\nwaiting $sleepytime for things to settle out\n"
 sleep $sleepytime
 
 date +'%s' >"${LOGDIR}/timestamp_end.txt"
