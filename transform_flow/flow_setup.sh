@@ -77,7 +77,7 @@ count_of_checks=0
 
 echo "Initializing with sr_audit... takes a minute or two"
 if [ "${sarra_py_version:0:1}" == "3" ]; then
-    sr3 --users declare 
+    sr_action --users declare
 else
     if [ ! "$SARRA_LIB" ]; then
         sr_audit -debug -users foreground >>$flowsetuplog 2>&1
