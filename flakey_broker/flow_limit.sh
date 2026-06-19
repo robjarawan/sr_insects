@@ -99,7 +99,7 @@ running=1
 count=0
 while [ $running -gt 0 ]; do
   # can have sr_post or sr3_post
-  running="`ps ax | grep -aE '(sr_post|sr3_post)' | grep t_dd | wc -l`"
+  running="`ps ax | grep -aE '(sr_post|sr3_post)' | grep -E "t_dd|test2_f61" | wc -l`"
   printf "${flow_test_name} ${running} processes still posting... %d\n" $count
   count=$((${count}+1))
   sleep 10
@@ -126,6 +126,8 @@ while [ $retry_msgcnt -gt 0 ]; do
         fi
 
 done
+
+# wait for post
 
 #queued_msgcnt="`rabbitmqadmin -H localhost -u bunnymaster -p ${adminpw} -f tsv list queues | awk ' BEGIN {t=0;} (NR > 1)  && /_f[0-9][0-9]/ { t+=$(23); }; END { print t; };'`"
 queued_msgcnt="`rabbitmqadmin -H localhost -u bunnymaster -p ${adminpw} -f tsv list queues | awk ' BEGIN {t=0;} (NR > 1)  && /_f[0-9][0-9]/ { t+=$2; }; END { print t; };'`"
