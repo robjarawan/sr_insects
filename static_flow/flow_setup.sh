@@ -92,7 +92,7 @@ fi
 if [ "${sarra_rs_version}" ]; then
    mkdir ~/.config/sr3rs
    cd ~/.config/sr3; tar -cf - * | (cd ../sr3rs; tar -xf - )
-   cd ~/.config/sr3rs; mv cpost/veille_f34.conf watch/
+   cd ~/.config; mv sr3/cpost/veille_f34.conf sr3rs/watch/veille_f34.conf
    flow_configs="`echo ${flow_configs} | sed 's+cpost/veille_f34+watch/veille_f34+' `"
    #cd ~/.config; cp sr3rs/cpost/shim_f61.conf sr3/cpost/veille_f34.conf
 fi
