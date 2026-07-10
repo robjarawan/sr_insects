@@ -132,8 +132,8 @@ flowchart TD
     sender_config -->|AMQP| xs_tsource_output
     xs_tsource_output --> subscribe_config4
     xs_tsource_output --> subscribe_config3
-    subscribe_config3 -->|cp command, download| subscribe_data3
-    subscribe_config4 -->|file:// transfer, download| subscribe_data4
+    subscribe_config3 -->|SFTP, download| subscribe_data3
+    subscribe_config4 -->|cp command, download| subscribe_data4
     xs_tsource --> shovel_config 
     shovel_config -->|AMQP| xs_mqtt_public
     xs_mqtt_public --> subscribe_config2
@@ -285,8 +285,8 @@ flowchart TD
     sender_config -->|AMQP,post| xs_tsource_output
     xs_tsource_output --> subscribe_config3
     xs_tsource_output --> subscribe_config4
-    subscribe_config3 -->|cp command, download| subscribe_data3
-    subscribe_config4 -->|file:// transfer, download| subscribe_data4
+    subscribe_config3 -->|SFTP, download| subscribe_data3
+    subscribe_config4 -->|cp command, download| subscribe_data4
     xs_tsource --> shovel_config3
     xs_tsource --> shovel_config4
     shovel_config4 --->|AMQP| xs_tsource_clean_f90
