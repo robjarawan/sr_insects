@@ -47,13 +47,34 @@ pyexamples=${HOME}/work/sarracenia/examples
 if [ ! -d "${pyexamples}" ]; then
     pyexamples=${HOME}/Sarracenia/sr3/sarracenia/examples
     if [ ! -d "${pyexamples}" ]; then
-	if [ ! "${GITHUB_HEAD_REF}"]; then
-            GITHUB_HEAD_REF=development
+	# Under Actions the sarracenia checkout is already on the runner, so use
+	# the examples from the revision actually under test instead of fetching
+	# them over the network. GITHUB_WORKSPACE points at that checkout.
+	if [ -n "${GITHUB_WORKSPACE}" ] && [ -d "${GITHUB_WORKSPACE}/sarracenia/examples" ]; then
+	    pyexamples="${GITHUB_WORKSPACE}/sarracenia/examples"
+	else
+	    # Fetching is what a developer running this outside Actions needs.
+	    # GITHUB_HEAD_REF is set on pull_request events only and names a branch
+	    # in the head repository, while the URL below is hardcoded to MetPX, so
+	    # for a pull request in any other repository that ref does not resolve.
+	    # Settle the ref once against a file that exists on every branch, so a
+	    # genuinely missing example still fails loudly instead of being
+	    # silently replaced by the copy on development.
+	    if [ ! "${GITHUB_HEAD_REF}" ]; then
+		GITHUB_HEAD_REF=development
+	    fi
+	    if ! wget -q --spider https://raw.githubusercontent.com/MetPX/sarracenia/${GITHUB_HEAD_REF}/setup.py; then
+		GITHUB_HEAD_REF=development
+	    fi
+	    echo "fetching the python examples from MetPX/sarracenia ${GITHUB_HEAD_REF}"
+	    for example in moth_api_consumer.py moth_api_producer.py flow_api_consumer.py; do
+		# wget appends .1 .2 rather than overwriting, and the test below runs
+		# the unsuffixed name, which would silently be a stale copy.
+		rm -f "${example}"
+		wget https://raw.githubusercontent.com/MetPX/sarracenia/${GITHUB_HEAD_REF}/sarracenia/examples/${example}
+	    done
+	    pyexamples=`pwd`
 	fi
-	wget https://raw.githubusercontent.com/MetPX/sarracenia/${GITHUB_HEAD_REF}/sarracenia/examples/moth_api_consumer.py
-	wget https://raw.githubusercontent.com/MetPX/sarracenia/${GITHUB_HEAD_REF}/sarracenia/examples/moth_api_producer.py
-	wget https://raw.githubusercontent.com/MetPX/sarracenia/${GITHUB_HEAD_REF}/sarracenia/examples/flow_api_consumer.py
-        pyexamples=`pwd`
     fi
 fi
 
